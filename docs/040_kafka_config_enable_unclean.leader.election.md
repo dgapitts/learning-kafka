@@ -62,3 +62,28 @@ Finally reviewing unclean.leader.election.enable
   leader.replication.throttled.replicas= sensitive=false synonyms={}
   unclean.leader.election.enable=true sensitive=false synonyms={DYNAMIC_TOPIC_CONFIG:unclean.leader.election.enable=true, DEFAULT_CONFIG:unclean.leader.election.enable=false}
 ```
+
+
+NB This was from the training course
+
+```
+cloud_user@ip-10-0-1-102:~$ kafka-configs --zookeeper localhost:2181 --entity-type topics --entity-name inventory_purchases --alter --add-config unclean.leader.election.enable=true
+Completed Updating config for entity: topic 'inventory_purchases'.
+```
+
+but
+
+```
+/usr/local/opt/kafka $ bin/kafka-configs --zookeeper localhost:2181 --entity-type topics --entity-name mytopic --alter --add-config unclean.leader.election.enable=true
+Invalid entity type topics, the entity type must be one of users, brokers with the --zookeeper argument
+```
+
+the solution as above was to
+* replace the zookeeper call `--zookeeper localhost:2181`
+* with the kafka bootstrap server `--bootstrap-server localhost:9092`
+
+
+```
+/usr/local/opt/kafka $ kafka-configs --bootstrap-server localhost:9092 --entity-type topics --entity-name mytopic --alter --add-config unclean.leader.election.enable=true
+Completed updating config for topic mytopic.
+```
